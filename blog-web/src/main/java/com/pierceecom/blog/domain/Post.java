@@ -1,5 +1,7 @@
 package com.pierceecom.blog.domain;
 
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,11 +11,17 @@ import lombok.ToString;
 @Builder
 @Getter
 @ToString
+@Entity
 public class Post {
 
-  private final String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id")
+  private String id;
 
-  private final String title;
+  @Column(name = "title")
+  private String title;
 
-  private final String content;
+  @Column(name = "content")
+  private String content;
 }
