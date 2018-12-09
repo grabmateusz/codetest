@@ -1,3 +1,7 @@
+# Maven target directory
+*/target/*
+
+# Java classes
 *.class
 
 # Mobile Tools for Java (J2ME)
