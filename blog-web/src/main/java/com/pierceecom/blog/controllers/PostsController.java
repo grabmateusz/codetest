@@ -3,13 +3,20 @@ package com.pierceecom.blog.controllers;
 import com.github.dozermapper.core.Mapper;
 import com.pierceecom.blog.domain.Post;
 import com.pierceecom.blog.dto.PostDto;
+import com.pierceecom.blog.dto.PostsListDto;
 import com.pierceecom.blog.services.PostsService;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @RestController
@@ -28,8 +36,11 @@ public class PostsController {
   @Autowired
   private Mapper mapper;
 
-  @GetMapping("/posts")
-  public List<PostDto> getAllPosts() {
+  @Autowired
+  private Validator validator;
+
+  @GetMapping(value = "/posts", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+  public ResponseEntity<PostsListDto> getAllPosts() {
     UUID requestId = UUID.randomUUID();
 
     log.debug("{}: Calling GET request on /posts endpoint", requestId);
@@ -40,67 +51,104 @@ public class PostsController {
         .map(this::mapToDto)
         .collect(Collectors.toList());
 
-    log.debug("{}: Returning Posts: {}", requestId, posts);
+    PostsListDto postsListDto = new PostsListDto(posts);
+    ResponseEntity<PostsListDto> response = ResponseEntity.ok(postsListDto);
 
-    return posts;
+    log.debug("{}: Returning Posts: {}", requestId, response);
+
+    return response;
   }
 
-  @GetMapping("/posts/{postId}")
-  public PostDto getPostById(@PathVariable String postId) {
+  @GetMapping(value = "/posts/{postId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+  public ResponseEntity<PostDto> getPostById(@PathVariable String postId) {
     UUID requestId = UUID.randomUUID();
 
     log.debug("{}: Calling GET request on /posts/{} endpoint", requestId, postId);
 
     Optional<PostDto> post = Optional.of(postsService)
-                  .map(p -> p.getOne(postId))
+                  .flatMap(p -> p.getOne(postId))
                   .map(this::mapToDto);
 
-    PostDto postDto = post.get();
-
-    log.debug("{}: Returning Post: {}", requestId, postDto);
-    return postDto;
+    final ResponseEntity<PostDto> response;
+    if (post.isPresent()) {
+      response = ResponseEntity.ok(post.get());
+      log.debug("{}: Returning Post: {}", requestId, response);
+    } else {
+      response = ResponseEntity.noContent().build();
+      log.debug("{}: Returning no content response {} for Post ID: {}", requestId, response, postId);
+    }
+    return response;
   }
 
-  @PostMapping("/posts")
-  public PostDto addPost(@RequestBody PostDto post) {
+  @PostMapping(value = "/posts", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+  public ResponseEntity<PostDto> addPost(@RequestBody PostDto post, UriComponentsBuilder uriComponentsBuilder) {
     UUID requestId = UUID.randomUUID();
 
-    log.debug("{}: Calling POST request on /posts endpoint with argument: {}", requestId, post);
+    log.warn("{}: Calling POST request on /posts endpoint with argument: {}", requestId, post);
 
-    Post postToAdd = mapToDomain(post);
-    Post newlyCreatedPost = postsService.save(postToAdd);
-    PostDto newlyCreatedPostDto = mapToDto(newlyCreatedPost);
+    Set<ConstraintViolation<PostDto>> violations = validator.validate(post);
 
-    log.debug("{}: Returning persisted Post: {}", newlyCreatedPostDto);
+    ResponseEntity<PostDto> result;
+    if (!violations.isEmpty()) {
+      result = ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+      log.warn("{}: Returning Result: {}", requestId, result);
+    } else {
+      Post postToAdd = mapToDomain(post);
+      Post newlyCreatedPost = postsService.save(postToAdd);
+      PostDto newlyCreatedPostDto = mapToDto(newlyCreatedPost);
 
-    return newlyCreatedPostDto;
+      result = ResponseEntity.created(uriComponentsBuilder.path("/posts/{id}").build(newlyCreatedPost.getId())).build();
+
+      log.warn("{}: Returning persisted Post: {}", newlyCreatedPostDto);
+    }
+    return result;
   }
 
-  @PutMapping("/posts/{postId}")
-  public PostDto updatePost(@PathVariable String postId, @RequestBody PostDto post) {
+  @PutMapping(value = "/posts/{postId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+  public ResponseEntity<PostDto> updatePost(@PathVariable String postId, @RequestBody PostDto post, UriComponentsBuilder uriComponentsBuilder) {
     UUID requestId = UUID.randomUUID();
 
     log.debug("{}: Calling PUT request on /posts/{} endpoint with argument: {}", requestId, postId, post);
 
-    Post postToUpdate = mapToDomain(post);
-    Post updatedPost = postsService.save(postToUpdate);
-    PostDto updatedPostDto = mapToDto(updatedPost);
+    Set<ConstraintViolation<PostDto>> violations = validator.validate(post);
 
-    log.debug("{}: Returning updated Post: {}", updatedPostDto);
-
-    return updatedPostDto;
+    ResponseEntity<PostDto> result;
+    if (!violations.isEmpty()) {
+      result = ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+      log.debug("{}: Returning information invalid input was provided: {}", requestId, result);
+    } else {
+      Post postToUpdate = mapToDomain(post);
+      Optional<Post> alreadyPersistedPost = postsService.getOne(postId);
+      if (alreadyPersistedPost.isPresent()) {
+        Post updatedPost = postsService.save(postToUpdate);
+        PostDto updatedPostDto = mapToDto(updatedPost);
+        result = ResponseEntity.created(uriComponentsBuilder.build(updatedPostDto.getId())).build();
+        log.debug("{}: Returning updated Post: {}", requestId, result);
+      } else {
+        result = ResponseEntity.notFound().build();
+        log.debug("{}: Returning information that post with given ID does not exist: {}", requestId, result);
+      }
+    }
+    return result;
   }
 
-  @DeleteMapping("/posts/{postId}")
-  public void deletePostById(@PathVariable String postId) {
+  @DeleteMapping(value = "/posts/{postId}")
+  public ResponseEntity<Void> deletePostById(@PathVariable String postId) {
     UUID requestId = UUID.randomUUID();
 
     log.debug("{}: Calling DELETE request on /posts/{} endpoint", requestId, postId);
 
-    postsService.deleteById(postId);
-
-    log.debug("{}: Removed post with ID: {}", postId);
-
+    ResponseEntity<Void> result;
+    Optional<Post> post = postsService.getOne(postId);
+    if (post.isPresent()) {
+      postsService.deleteById(postId);
+      result = ResponseEntity.ok().build();
+      log.debug("{}: Removed post with ID: {}. Sending response: {}", requestId, postId, result);
+    } else {
+      result = ResponseEntity.notFound().build();
+      log.debug("{}: Could not remove post with ID: {}, as it does not exist. Returning response: {}", requestId, postId, result);
+    }
+    return result;
   }
 
   private PostDto mapToDto(Post p) {

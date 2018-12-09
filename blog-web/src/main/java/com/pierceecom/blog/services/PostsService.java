@@ -3,6 +3,7 @@ package com.pierceecom.blog.services;
 import com.pierceecom.blog.domain.Post;
 import com.pierceecom.blog.repositories.PostsRepository;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,8 @@ public class PostsService {
     return postsRepository.findAll();
   }
 
-  public Post getOne(String id) {
-    return postsRepository.getOne(id);
+  public Optional<Post> getOne(String id) {
+    return postsRepository.findById(id);
   }
 
   public Post save(Post post) {

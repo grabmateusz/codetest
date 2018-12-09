@@ -1,5 +1,7 @@
 package com.pierceecom.blog;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,7 +11,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.junit.Assert.*;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -23,7 +24,7 @@ public class BlogTestIntegr {
 
     private static final String POST_1 = "{\"id\":\"1\",\"title\":\"First title\",\"content\":\"First content\"}";
     private static final String POST_2 = "{\"id\":\"2\",\"title\":\"Second title\",\"content\":\"Second content\"}";
-    private static final String POSTS_URI = "http://localhost:8080/blog-web/posts/";
+    private static final String POSTS_URI = "http://localhost:8080/com.pierceecom.blog-web/posts/";
 
     
     public BlogTestIntegr() {

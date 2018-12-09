@@ -1,12 +1,17 @@
 package com.pierceecom.blog;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
+import com.pierceecom.blog.dto.PostsListDto;
+import com.pierceecom.blog.json.PostsListDtoSerializer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 @EnableJpaRepositories(Application.REPOSITORIES_ROOT_PACKAGE)
 @EntityScan(Application.ENTITIES_ROOT_PACKAGE)
@@ -25,9 +30,15 @@ public class Application {
 
   @Bean
   public Mapper getMapper() {
-    return DozerBeanMapperBuilder.create()
-        .withMappingFiles("mappings.xml")
+    return DozerBeanMapperBuilder.buildDefault();
+  }
+
+  @Bean
+  public ObjectMapper jsonObjectMapper() {
+    SimpleModule collectionTypeSerializerModule = new SimpleModule();
+    collectionTypeSerializerModule.addSerializer(new PostsListDtoSerializer(PostsListDto.class));
+    return Jackson2ObjectMapperBuilder.json()
+        .modules(collectionTypeSerializerModule)
         .build();
   }
 }
-

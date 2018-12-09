@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://dozermapper.github.io/schema/bean-mapping http://dozermapper.github.io/schema/bean-mapping.xsd">
   <mapping>
-    <class-a>com.pierceecom.blog.domain.Post</class-a>
-    <class-b>com.pierceecom.blog.dto.PostDto</class-b>
+    <class-a>com.pierceecom.blog.dto.PostDto</class-a>
+    <class-b>com.pierceecom.blog.domain.Post</class-b>
   </mapping>
 </mappings>
