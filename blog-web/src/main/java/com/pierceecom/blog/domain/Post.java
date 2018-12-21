@@ -2,6 +2,8 @@ package com.pierceecom.blog.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,8 +20,9 @@ import lombok.ToString;
 public class Post {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id")
-  private String id;
+  private Long id;
 
   @Column(name = "title")
   private String title;

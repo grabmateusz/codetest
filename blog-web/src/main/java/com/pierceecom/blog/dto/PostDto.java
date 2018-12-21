@@ -1,6 +1,9 @@
 package com.pierceecom.blog.dto;
 
+import com.pierceecom.blog.dto.validation.ExistingPostGroup;
+import com.pierceecom.blog.dto.validation.NewPostGroup;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -16,15 +19,15 @@ import lombok.NoArgsConstructor;
 @XmlRootElement(name = "Post")
 public class PostDto {
 
-  @NotNull
+  @Null(groups = NewPostGroup.class)
   @XmlElement(name = "id")
   private String id;
 
-  @NotNull
+  @NotNull(groups = { NewPostGroup.class, ExistingPostGroup.class })
   @XmlElement(name = "title")
   private String title;
 
-  @NotNull
+  @NotNull(groups = { NewPostGroup.class, ExistingPostGroup.class })
   @XmlElement(name = "content")
   private String content;
 }
