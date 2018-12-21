@@ -16,6 +16,9 @@
 *.iml
 .idea/
 
+# NPM files
+node_modules
+
 # Mac OS Finder files
 .DS_Store
 

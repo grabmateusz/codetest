@@ -12,6 +12,9 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @EnableJpaRepositories(Application.REPOSITORIES_ROOT_PACKAGE)
 @EntityScan(Application.ENTITIES_ROOT_PACKAGE)
@@ -40,5 +43,15 @@ public class Application {
     return Jackson2ObjectMapperBuilder.json()
         .modules(collectionTypeSerializerModule)
         .build();
+  }
+
+  @Bean
+  public WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurerAdapter() {
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/posts").allowedOrigins("http://localhost:4200");
+      }
+    };
   }
 }
