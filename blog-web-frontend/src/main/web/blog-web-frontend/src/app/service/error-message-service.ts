@@ -7,9 +7,7 @@ import { ErrorMessage } from '../model/error-message';
 export class ErrorMessageService {
 
   emitErrorMessage(error, errorChanged) {
-    const errorMessage = new ErrorMessage();
-    errorMessage.message = error.message;
+    const errorMessage = new ErrorMessage(error.message);
     errorChanged.emit(errorMessage);
-    console.log(error);
   }
 }

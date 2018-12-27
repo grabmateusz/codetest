@@ -11,8 +11,7 @@ import { EditBlogPostComponent } from './edit-blog-post/edit-blog-post.component
 import { ListBlogPostComponent } from './list-blog-post/list-blog-post.component';
 import { DeleteBlogPostComponent } from './delete-blog-post/delete-blog-post.component';
 import { EditorModule } from '@tinymce/tinymce-angular';
-import {SafeMarkupService} from "./service/safe-markup.service";
-
+import { SafeMarkupService } from "./service/safe-markup.service";
 
 @NgModule({
   declarations: [

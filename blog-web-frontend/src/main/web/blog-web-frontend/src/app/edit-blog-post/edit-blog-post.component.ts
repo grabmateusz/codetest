@@ -14,14 +14,14 @@ import { ModificationType } from "../model/modification-type";
 })
 export class EditBlogPostComponent implements OnInit {
 
-  @Input()
-  postId: number;
-
   post: BlogPost;
 
   blogPostForm: FormGroup;
 
-  submitted = false;
+  submitted: boolean;
+
+  @Input()
+  postId: number;
 
   @Output()
   blogPostsListChanged = new EventEmitter<ModificationType>();
@@ -67,11 +67,7 @@ export class EditBlogPostComponent implements OnInit {
   }
 
   private updatePost(formData) {
-    const updatedPost = new BlogPost();
-    updatedPost.id = this.postId;
-    updatedPost.title = formData.blogPostTitle;
-    updatedPost.content = formData.blogPostContent;
-
+    const updatedPost = new BlogPost(formData.blogPostTitle, formData.blogPostContent, this.postId);
     this.blogPostsService.updatePost(updatedPost)
     .subscribe(() => {
       this.blogPostsListChanged.emit(ModificationType.Update);

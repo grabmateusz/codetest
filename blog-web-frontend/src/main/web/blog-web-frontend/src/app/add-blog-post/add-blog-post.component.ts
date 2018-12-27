@@ -44,7 +44,7 @@ export class AddBlogPostComponent implements OnInit {
 
   open(content) {
     this.submitted = false;
-    this.post = new BlogPost();
+    this.post = new BlogPost(null, null, null);
     this.modalService
     .open(content, {ariaLabelledBy: 'modal-basic-title'})
     .result
@@ -61,17 +61,15 @@ export class AddBlogPostComponent implements OnInit {
   }
 
   initEditor() {
-    const tinyMce = window.tinyMCE;
+    let globalWindow = window as any;
+    const tinyMce = globalWindow.tinyMCE;
     if (tinyMce && tinyMce.activeEditor) {
       tinyMce.activeEditor.setContent('');
     }
   }
 
   private createPost(result) {
-    const newPost = new BlogPost();
-    newPost.title = result.blogPostTitle;
-    newPost.content = result.blogPostContent;
-
+    const newPost = new BlogPost(result.blogPostTitle, result.blogPostContent, null);
     this.blogPostsService.createPost(newPost)
     .subscribe(() => {
       this.blogPostsListChanged.emit(ModificationType.Add);

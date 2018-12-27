@@ -11,35 +11,34 @@ import { ModificationType } from "../model/modification-type";
 })
 export class ListBlogPostComponent implements OnInit {
 
+  FIRST_PAGE: number = 1;
+
+  page: number = this.FIRST_PAGE;
+
+  previousPage: number = this.page;
+
+  pageSize: number;
+
   error: ErrorMessage;
 
-  blogPosts: BlogPost[];
+  blogPosts: BlogPost[] = [];
 
   totalPages: number;
 
   totalElements: number;
 
-  page: number;
-
-  previousPage: number;
-
-  pageSize: number;
-
   loaded: boolean;
 
-  changeSource: string;
+  changeSource: ChangeSource;
 
   lastModification: ModificationType;
+
+  lastPageRequested: number;
 
   constructor(
     private blogPostsService: BlogPostsService,
     private app: ApplicationRef
   ) {
-    this.blogPosts = [];
-    this.totalElements = 0;
-    this.page = 1;
-    this.previousPage = this.page;
-    this.pageSize = 2;
   }
 
   getPosts() {
@@ -47,12 +46,21 @@ export class ListBlogPostComponent implements OnInit {
     this.blogPostsService.getPosts(this.page, this.pageSize)
     .subscribe(
       response => {
-        this.totalElements = response.page.totalElements;
-        this.totalPages = response.page.totalPages;
-        response.posts.forEach(post => blogPosts.push(post))
-        this.blogPosts = blogPosts;
-        this.forcePaginationRefresh();
+        this.handleResponse(response, blogPosts);
       }, error => this.error = error);
+  }
+
+  private handleResponse(response, blogPosts) {
+    const previousPages = this.totalPages;
+    this.totalElements = response.page.totalElements;
+    this.totalPages = response.page.totalPages;
+    this.pageSize = response.page.size;
+
+    response.posts.forEach(post => blogPosts.push(post))
+    this.blogPosts = blogPosts;
+    if (previousPages != this.totalPages) {
+      this.forcePaginationRefresh();
+    }
   }
 
   ngOnInit() {
@@ -61,7 +69,7 @@ export class ListBlogPostComponent implements OnInit {
 
   onBlogPostsListChanged(event: ModificationType) {
     this.error = null;
-    this.changeSource = 'data';
+    this.changeSource = ChangeSource.Data;
     this.lastModification = event;
     this.handleChange(true);
   }
@@ -79,44 +87,76 @@ export class ListBlogPostComponent implements OnInit {
   }
 
   handleChange(force) {
-    const pageChange = this.page != this.previousPage;
+    const pageChange = this.isPageChanged();
+    const addChange = this.isAddChange();
+    const newPageRequired = this.isNewPageRequired(addChange);
+    const previousPageRequired = this.isPreviousPageRequired();
 
-    const addChange = ModificationType.Add == this.lastModification
-      && this.changeSource == 'data';
-    const newPageRequired = addChange
-      && this.totalElements == this.pageSize * this.totalPages;
+    this.handlePageChange(newPageRequired, addChange, previousPageRequired);
+    let shouldFetch = this.shouldFetchPosts(newPageRequired);
 
-    if (newPageRequired) {
-      this.page = parseInt('' + this.totalPages) + parseInt(''+ 1);
-    } else if (addChange) {
-      this.page = parseInt('' + this.totalPages);
-    }
-
-    const previousPageRequired = ModificationType.Delete == this.lastModification
-      && this.changeSource == 'data'
-      && this.totalElements == (this.pageSize * (this.totalPages - 1)) + 1
-      && this.page == this.totalPages;
-
-    if (previousPageRequired) {
-      this.page = this.totalPages - 1;
-    }
-
-    if (newPageRequired || previousPageRequired || pageChange || force) {
+    if ((newPageRequired || previousPageRequired || pageChange || force) && shouldFetch) {
+      this.lastPageRequested = this.page;
       this.getPosts();
     }
-
     this.previousPage = this.page;
   }
 
+  private shouldFetchPosts(newPageRequired) {
+    let shouldRequest = true;
+    if (newPageRequired && this.lastPageRequested == this.page && this.page !== this.FIRST_PAGE) {
+      shouldRequest = false;
+    }
+    return shouldRequest;
+  }
+
+  private isPreviousPageRequired() {
+    return ModificationType.Delete == this.lastModification
+      && this.changeSource == ChangeSource.Data
+      && this.totalElements == (this.pageSize * (this.totalPages - 1)) + 1
+      && this.page == this.totalPages
+      && this.page > 1;
+  }
+
+  private handlePageChange(newPageRequired, addChange, previousPageRequired) {
+    if (newPageRequired) {
+      this.page = parseInt('' + this.totalPages) + parseInt('' + 1);
+    } else if (addChange) {
+      this.page = parseInt('' + this.totalPages);
+    }
+    if (previousPageRequired) {
+      this.page = this.totalPages - 1;
+    }
+  }
+
+  private isNewPageRequired(addChange) {
+    return addChange
+      && this.totalElements == this.pageSize * this.totalPages;
+  }
+
+  private isAddChange() {
+    return ModificationType.Add == this.lastModification
+      && this.changeSource == ChangeSource.Data;
+  }
+
+  private isPageChanged() {
+    return this.page != this.previousPage;
+  }
+
   onClick() {
-    this.changeSource = 'click';
+    this.changeSource = ChangeSource.Click;
   }
 
   private forcePaginationRefresh() {
     this.loaded = true;
-    this.page = this.page - 1;
+    this.page--;
     this.app.tick();
-    this.page = this.page + 1;
+    this.page++;
     this.app.tick();
   }
+}
+
+enum ChangeSource {
+  Click,
+  Data
 }
