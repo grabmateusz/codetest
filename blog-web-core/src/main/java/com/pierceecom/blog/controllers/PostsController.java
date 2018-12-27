@@ -60,8 +60,7 @@ public class PostsController {
         .map(this::mapToDto)
         .collect(Collectors.toList());
 
-    PageDto pageDto = mapToDto(postsPage);
-
+    PageDto pageDto = mapper.map(postsPage, PageDto.class);
     ResultsDto postsListDto = new ResultsDto(posts, pageDto);
     ResponseEntity<ResultsDto> response = ResponseEntity.ok(postsListDto);
 
@@ -80,8 +79,7 @@ public class PostsController {
     Post post = postsService.getOne(postId);
     PostDto postDto = mapToDto(post);
 
-    final ResponseEntity<PostDto> response;
-    response = ResponseEntity.ok(postDto);
+    ResponseEntity<PostDto> response = ResponseEntity.ok(postDto);
     log.debug("{}: Returning Post: {}", requestId, response);
 
     return response;
@@ -159,9 +157,5 @@ public class PostsController {
 
   private Post mapToDomain(PostDto p) {
     return mapper.map(p, Post.class);
-  }
-
-  private PageDto mapToDto(Page p) {
-    return mapper.map(p, PageDto.class);
   }
 }
