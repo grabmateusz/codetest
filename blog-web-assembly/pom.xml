@@ -27,14 +27,13 @@
     <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
     <lombok.version>1.18.4</lombok.version>
     <spring.boot.version>2.1.1.RELEASE</spring.boot.version>
-    <angular.api.endpoint>http://localhost:8080</angular.api.endpoint>
     <start-class>com.pierceecom.blog.Application</start-class>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.pierceecom.sample</groupId>
-      <artifactId>blog-web</artifactId>
+      <artifactId>blog-web-core</artifactId>
       <version>1.0-SNAPSHOT</version>
       <type>jar</type>
     </dependency>
@@ -136,9 +135,6 @@
           <value>dev</value>
         </property>
       </activation>
-      <properties>
-        <angular.api.endpoint>http://localhost:8080</angular.api.endpoint>
-      </properties>
       <dependencies>
         <dependency>
           <groupId>org.hsqldb</groupId>
@@ -157,9 +153,6 @@
           <value>prod</value>
         </property>
       </activation>
-      <properties>
-        <angular.api.endpoint>http://localhost:8080</angular.api.endpoint>
-      </properties>
       <dependencies>
         <!-- TODO: Change to other DB - POSTGRES? -->
         <dependency>

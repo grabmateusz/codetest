@@ -5,6 +5,7 @@ import { BlogPostsService } from '../service/blog-posts-service.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ErrorMessage } from '../model/error-message';
 import { ErrorMessageService } from '../service/error-message-service';
+import { ModificationType } from "../model/modification-type";
 
 @Component({
   selector: 'blog-app-edit-blog-post',
@@ -23,7 +24,7 @@ export class EditBlogPostComponent implements OnInit {
   submitted = false;
 
   @Output()
-  blogPostsListChanged = new EventEmitter<boolean>();
+  blogPostsListChanged = new EventEmitter<ModificationType>();
 
   @Output()
   errorChanged = new EventEmitter<ErrorMessage>();
@@ -72,9 +73,8 @@ export class EditBlogPostComponent implements OnInit {
     updatedPost.content = formData.blogPostContent;
 
     this.blogPostsService.updatePost(updatedPost)
-    .subscribe(updateResponse => {
-      console.log(updateResponse);
-      this.blogPostsListChanged.emit(true);
+    .subscribe(() => {
+      this.blogPostsListChanged.emit(ModificationType.Update);
     }, error => {
       this.errorMessageService.emitErrorMessage(error, this.errorChanged);
     });

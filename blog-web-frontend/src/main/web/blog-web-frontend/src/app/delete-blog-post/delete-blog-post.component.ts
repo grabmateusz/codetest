@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BlogPostsService } from '../service/blog-posts-service.service';
 import { ErrorMessage } from '../model/error-message';
 import { ErrorMessageService } from '../service/error-message-service';
+import { ModificationType } from "../model/modification-type";
 
 @Component({
   selector: 'blog-app-delete-blog-post',
@@ -15,7 +16,7 @@ export class DeleteBlogPostComponent {
   postId: number;
 
   @Output()
-  blogPostsListChanged = new EventEmitter<boolean>();
+  blogPostsListChanged = new EventEmitter<ModificationType>();
 
   @Output()
   errorChanged = new EventEmitter<ErrorMessage>();
@@ -36,9 +37,8 @@ export class DeleteBlogPostComponent {
 
   private removePost() {
     this.blogPostsService.deletePost(this.postId)
-    .subscribe(deleteResponse => {
-      console.log(deleteResponse);
-      this.blogPostsListChanged.emit(true);
+    .subscribe(() => {
+      this.blogPostsListChanged.emit(ModificationType.Delete);
     }, error => {
       this.errorMessageService.emitErrorMessage(error, this.errorChanged);
     });

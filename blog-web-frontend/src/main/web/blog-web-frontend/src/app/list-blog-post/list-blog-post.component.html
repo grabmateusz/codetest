@@ -8,21 +8,20 @@
         <div class="col-sm-6 add-blog-post">
           <blog-app-add-blog-post
             (errorChanged)="onErrorChanged($event)"
-            (blogPostsListChanged)="onBlogPostsListChanged($event)"
-          ></blog-app-add-blog-post>
+            (blogPostsListChanged)="onBlogPostsListChanged($event)">
+          </blog-app-add-blog-post>
         </div>
       </div>
     </div>
 
-    <div *ngIf="!error && noBlogPosts()"
+    <div *ngIf="loaded && !error && noBlogPosts()"
          class="alert alert-success"
-         role="alert"
-    >
+         role="alert">
       There are no Blog posts.<br>
       Create one to see them in the Blog Posts list!
     </div>
 
-    <div *ngIf="error"
+    <div *ngIf="loaded && error"
          class="alert alert-danger"
          role="alert">
       Error occurred while calling Blog Posts API:<br>
@@ -36,16 +35,31 @@
           <blog-app-edit-blog-post
             postId="{{blogPost.id}}"
             (errorChanged)="onErrorChanged($event)"
-            (blogPostsListChanged)="onBlogPostsListChanged($event)"
-          ></blog-app-edit-blog-post>
+            (blogPostsListChanged)="onBlogPostsListChanged($event)">
+          </blog-app-edit-blog-post>
           <blog-app-delete-blog-post
             postId="{{blogPost.id}}"
             (errorChanged)="onErrorChanged($event)"
-            (blogPostsListChanged)="onBlogPostsListChanged($event)"
-          ></blog-app-delete-blog-post>
+            (blogPostsListChanged)="onBlogPostsListChanged($event)">
+          </blog-app-delete-blog-post>
         </h1>
       </div>
       {{blogPost.content}}
     </article>
   </div>
 </div>
+
+<footer class="footer">
+  <div class="container">
+    <ngb-pagination
+      *ngIf="!noBlogPosts()"
+      class="d-flex justify-content-center"
+      [maxSize]="5"
+      [pageSize]="pageSize"
+      [collectionSize]="totalElements"
+      [(page)]="page"
+      (pageChange)="onPageChange($event)"
+      (click)="onClick()">
+    </ngb-pagination>
+  </div>
+</footer>

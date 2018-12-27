@@ -6,8 +6,8 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>blog-web</module>
-        <module>integration-test</module>
+        <module>blog-web-core</module>
+        <module>blog-web-integration-test</module>
         <module>blog-web-frontend</module>
         <module>blog-web-assembly</module>
     </modules>

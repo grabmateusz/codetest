@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BlogPost } from '../model/blog-post';
+import { BlogPostsPage } from "../model/blog-posts-page";
 import { environment} from '../../environments/environment';
 
 @Injectable({
@@ -14,8 +15,9 @@ export class BlogPostsService {
     this.baseUrl = environment.apiUrl + '/posts';
   }
 
-  getPosts() {
-    return this.http.get<BlogPost[]>(this.baseUrl);
+  getPosts(page: number, pageSize: number) {
+    const pageToRequest = (page > 0) ? page - 1 : page;
+    return this.http.get<BlogPostsPage>(`${this.baseUrl}?page=${pageToRequest}&size=${pageSize}`);
   }
 
   getPostById(id: number) {
