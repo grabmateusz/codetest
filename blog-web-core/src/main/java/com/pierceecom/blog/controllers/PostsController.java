@@ -100,11 +100,8 @@ public class PostsController {
     } else {
       Post postToAdd = mapToDomain(post);
       Post newlyCreatedPost = postsService.create(postToAdd);
-      PostDto newlyCreatedPostDto = mapToDto(newlyCreatedPost);
-
       result = ResponseEntity.created(uriComponentsBuilder.path("/posts/{id}").build(newlyCreatedPost.getId())).build();
-
-      log.warn("{}: Returning persisted Post: {}", newlyCreatedPostDto);
+      log.warn("{}: Returning persisted Post: {}", requestId, result);
     }
     return result;
   }
