@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.pierceecom.sample</groupId>
+  <artifactId>blog-web-assembly</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <name>blog-web-assembly</name>
+
+  <parent>
+    <artifactId>codetest</artifactId>
+    <groupId>com.pierceecom.sample</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>1.8</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
+    <lombok.version>1.18.4</lombok.version>
+    <spring.boot.version>2.1.1.RELEASE</spring.boot.version>
+    <angular.api.endpoint>http://localhost:8080</angular.api.endpoint>
+    <start-class>com.pierceecom.blog.Application</start-class>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.pierceecom.sample</groupId>
+      <artifactId>blog-web</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>com.pierceecom.sample</groupId>
+      <artifactId>blog-web-frontend</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>blog-web</finalName>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/classes/resources/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/../blog-web-frontend/src/main/web/blog-web-frontend/dist/blog-web-frontend</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>repackage</id>
+            <configuration>
+              <classifier>task</classifier>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <jvmArguments>
+            -Dfile.encoding=UTF8 -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000
+          </jvmArguments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <configuration>
+              <classifier>task</classifier>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>repackage</id>
+            <configuration>
+              <classifier>assemblypackage</classifier>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <jvmArguments>
+            -Dfile.encoding=UTF8 -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000
+          </jvmArguments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>env</name>
+          <value>dev</value>
+        </property>
+      </activation>
+      <properties>
+        <angular.api.endpoint>http://localhost:8080</angular.api.endpoint>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>org.hsqldb</groupId>
+          <artifactId>hsqldb</artifactId>
+          <version>2.4.1</version>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>prod</id>
+      <activation>
+        <property>
+          <name>env</name>
+          <value>prod</value>
+        </property>
+      </activation>
+      <properties>
+        <angular.api.endpoint>http://localhost:8080</angular.api.endpoint>
+      </properties>
+      <dependencies>
+        <!-- TODO: Change to other DB - POSTGRES? -->
+        <dependency>
+          <groupId>org.hsqldb</groupId>
+          <artifactId>hsqldb</artifactId>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
+</project>

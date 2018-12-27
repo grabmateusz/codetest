@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BlogPost } from '../model/blog-post';
+import { environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BlogPostsService {
-  constructor(private http: HttpClient) { }
-  baseUrl: string = '${angular.api.endpoint}/blog-web/posts';
+
+  baseUrl: string;
+
+  constructor(private http: HttpClient) {
+    this.baseUrl = environment.apiUrl + '/posts';
+  }
 
   getPosts() {
     return this.http.get<BlogPost[]>(this.baseUrl);

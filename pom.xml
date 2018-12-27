@@ -7,7 +7,26 @@
     <packaging>pom</packaging>
     <modules>
         <module>blog-web</module>
+        <module>integration-test</module>
         <module>blog-web-frontend</module>
-        <!--<module>integration-test</module>-->
+        <module>blog-web-assembly</module>
     </modules>
+    <repositories>
+        <repository>
+            <id>spring-snapshots</id>
+            <url>http://repo.spring.io/libs-snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-snapshots</id>
+            <url>http://repo.spring.io/libs-snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>

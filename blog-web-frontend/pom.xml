@@ -23,7 +23,7 @@
         <configuration>
           <nodeVersion>v8.11.3</nodeVersion>
           <npmVersion>6.3.0</npmVersion>
-          <workingDirectory>src/main/resources/WEB-INF/blog-web-frontend/src/</workingDirectory>
+          <workingDirectory>src/main/web/blog-web-frontend/src/</workingDirectory>
         </configuration>
         <executions>
           <execution>
@@ -72,7 +72,7 @@
               <outputDirectory>${project.build.directory}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>src/main/resources/WEB-INF/blog-web-frontend</directory>
+                  <directory>src/main/web/blog-web-frontend</directory>
                   <excludes>
                     <exclude>**/node_modules/**</exclude>
                     <exclude>**/node/**</exclude>

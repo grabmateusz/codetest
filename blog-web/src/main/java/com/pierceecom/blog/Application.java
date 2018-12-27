@@ -16,6 +16,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -70,6 +71,11 @@ public class Application extends SpringBootServletInitializer {
 
   @Bean
   public HttpMessageConverters converters() {
-    return new HttpMessageConverters(true, Arrays.asList(new Jaxb2RootElementHttpMessageConverter()));
+    MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+    mappingJackson2HttpMessageConverter.setObjectMapper(jsonObjectMapper());
+    return new HttpMessageConverters(true, Arrays.asList(
+        mappingJackson2HttpMessageConverter,
+        new Jaxb2RootElementHttpMessageConverter())
+    );
   }
 }
