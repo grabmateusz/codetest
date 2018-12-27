@@ -1,0 +1,51 @@
+<div class="container">
+  <div class="table-wrapper">
+    <div class="table-title">
+      <div class="row">
+        <div class="col-sm-6 blog-posts-title">
+          <h2>Manage <b>Blog Posts</b></h2>
+        </div>
+        <div class="col-sm-6 add-blog-post">
+          <blog-app-add-blog-post
+            (errorChanged)="onErrorChanged($event)"
+            (blogPostsListChanged)="onBlogPostsListChanged($event)"
+          ></blog-app-add-blog-post>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!error && noBlogPosts()"
+         class="alert alert-success"
+         role="alert"
+    >
+      There are no Blog posts.<br>
+      Create one to see them in the Blog Posts list!
+    </div>
+
+    <div *ngIf="error"
+         class="alert alert-danger"
+         role="alert">
+      Error occurred while calling Blog Posts API:<br>
+      {{error.message}}
+    </div>
+
+    <article *ngFor="let blogPost of blogPosts">
+      <div>
+        <h1>
+          {{blogPost.title}}
+          <blog-app-edit-blog-post
+            postId="{{blogPost.id}}"
+            (errorChanged)="onErrorChanged($event)"
+            (blogPostsListChanged)="onBlogPostsListChanged($event)"
+          ></blog-app-edit-blog-post>
+          <blog-app-delete-blog-post
+            postId="{{blogPost.id}}"
+            (errorChanged)="onErrorChanged($event)"
+            (blogPostsListChanged)="onBlogPostsListChanged($event)"
+          ></blog-app-delete-blog-post>
+        </h1>
+      </div>
+      {{blogPost.content}}
+    </article>
+  </div>
+</div>

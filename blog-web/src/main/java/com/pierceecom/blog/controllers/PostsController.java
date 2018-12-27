@@ -9,7 +9,6 @@ import com.pierceecom.blog.dto.PostsListDto;
 import com.pierceecom.blog.exceptions.PostNotFoundException;
 import com.pierceecom.blog.services.PostsService;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -61,27 +60,24 @@ public class PostsController {
 
     log.debug("{}: Returning Posts: {}", requestId, response);
 
+
     return response;
   }
 
   @GetMapping(value = "/posts/{postId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-  public ResponseEntity<PostDto> getPostById(@PathVariable Long postId) {
+  public ResponseEntity<PostDto> getPostById(@PathVariable Long postId)
+      throws PostNotFoundException {
     UUID requestId = UUID.randomUUID();
 
     log.debug("{}: Calling GET request on /posts/{} endpoint", requestId, postId);
 
-    Optional<PostDto> post = Optional.of(postsService)
-                  .flatMap(p -> p.getOne(postId))
-                  .map(this::mapToDto);
+    Post post = postsService.getOne(postId);
+    PostDto postDto = mapToDto(post);
 
     final ResponseEntity<PostDto> response;
-    if (post.isPresent()) {
-      response = ResponseEntity.ok(post.get());
-      log.debug("{}: Returning Post: {}", requestId, response);
-    } else {
-      response = ResponseEntity.noContent().build();
-      log.debug("{}: Returning no content response {} for Post ID: {}", requestId, response, postId);
-    }
+    response = ResponseEntity.ok(postDto);
+    log.debug("{}: Returning Post: {}", requestId, response);
+
     return response;
   }
 

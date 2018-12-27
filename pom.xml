@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>blog-web</module>
-        <module>blog-client</module>
-        <module>integration-test</module>
+        <module>blog-web-frontend</module>
+        <!--<module>integration-test</module>-->
     </modules>
 </project>
