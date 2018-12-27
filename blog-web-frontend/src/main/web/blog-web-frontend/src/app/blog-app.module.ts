@@ -10,6 +10,9 @@ import { AddBlogPostComponent } from './add-blog-post/add-blog-post.component';
 import { EditBlogPostComponent } from './edit-blog-post/edit-blog-post.component';
 import { ListBlogPostComponent } from './list-blog-post/list-blog-post.component';
 import { DeleteBlogPostComponent } from './delete-blog-post/delete-blog-post.component';
+import { EditorModule } from '@tinymce/tinymce-angular';
+import {SafeMarkupService} from "./service/safe-markup.service";
+
 
 @NgModule({
   declarations: [
@@ -17,7 +20,8 @@ import { DeleteBlogPostComponent } from './delete-blog-post/delete-blog-post.com
     AddBlogPostComponent,
     EditBlogPostComponent,
     ListBlogPostComponent,
-    DeleteBlogPostComponent
+    DeleteBlogPostComponent,
+    SafeMarkupService
   ],
   imports: [
     AngularFontAwesomeModule,
@@ -26,9 +30,12 @@ import { DeleteBlogPostComponent } from './delete-blog-post/delete-blog-post.com
     BlogAppRoutingModule,
     HttpClientModule,
     FormsModule,
+    EditorModule,
     ReactiveFormsModule.withConfig({warnOnNgModelWithFormControl: 'never'})
   ],
-  providers: [],
+  providers: [
+
+  ],
   bootstrap: [BlogAppComponent]
 })
 export class BlogAppModule { }

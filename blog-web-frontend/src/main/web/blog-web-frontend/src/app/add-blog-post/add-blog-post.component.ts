@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BlogPost } from '../model/blog-post';
 import { BlogPostsService } from '../service/blog-posts-service.service';
@@ -40,7 +40,6 @@ export class AddBlogPostComponent implements OnInit {
     }, {});
   }
 
-  // convenience getter for easy access to form fields
   get form() { return this.blogPostForm.controls; }
 
   open(content) {
@@ -58,6 +57,13 @@ export class AddBlogPostComponent implements OnInit {
     this.submitted = true;
     if (!this.blogPostForm.invalid) {
       modal.close(this.blogPostForm.value);
+    }
+  }
+
+  initEditor() {
+    const tinyMce = window.tinyMCE;
+    if (tinyMce && tinyMce.activeEditor) {
+      tinyMce.activeEditor.setContent('');
     }
   }
 

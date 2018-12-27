@@ -23,14 +23,23 @@
         </div>
         <div class="form-group">
           <label for="editContent">Content</label>
-          <textarea class="form-control"
-                    id="editContent"
-                    rows="3"
-                    name="blogPostContent"
-                    formControlName="blogPostContent"
-                    [(ngModel)]="post.content"
-                    [ngClass]="{'is-invalid': submitted && form.blogPostContent.errors }"
-                    required></textarea>
+
+          <!--
+          tinymce-angular is a commercial solution.
+          Test Api key is used here, no need to protect it.
+          -->
+          <editor
+            apiKey="7o102rmhlsgopo3vzh4g8udugp203lghx8g2i178xnz7vqy1"
+            [init]="{plugins: 'link'}"
+            class="form-control"
+            id="editContent"
+            rows="3"
+            name="blogPostContent"
+            formControlName="blogPostContent"
+            [(ngModel)]="post.content"
+            [ngClass]="{'is-invalid': submitted && form.blogPostContent.errors }"
+            required>
+          </editor>
           <div *ngIf="submitted && form.blogPostContent.errors" class="invalid-feedback">
             <div *ngIf="form.blogPostContent.errors.required">Blog post Content is required</div>
           </div>

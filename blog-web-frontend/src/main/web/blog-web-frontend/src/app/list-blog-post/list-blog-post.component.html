@@ -44,7 +44,7 @@
           </blog-app-delete-blog-post>
         </h1>
       </div>
-      {{blogPost.content}}
+      <div [innerHTML]="blogPost.content | safeMarkup"></div>
     </article>
   </div>
 </div>

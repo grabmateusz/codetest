@@ -2,8 +2,8 @@ DROP TABLE post IF EXISTS;
 
 CREATE TABLE post (
   id INT NOT NULL,
-  title VARCHAR(50) NOT NULL,
-  content VARCHAR(50) NOT NULL,
+  title VARCHAR(1000) NOT NULL,
+  content VARCHAR(10000) NOT NULL,
   PRIMARY KEY (id)
 );
 
