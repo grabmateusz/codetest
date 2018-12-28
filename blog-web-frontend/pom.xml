@@ -9,20 +9,16 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <properties>
-    <angular.api.endpoint>http://localhost:8080</angular.api.endpoint>
-  </properties>
-
   <artifactId>blog-web-frontend</artifactId>
   <build>
     <plugins>
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.6</version>
+        <version>${frontend.maven.plugin.version}</version>
         <configuration>
-          <nodeVersion>v8.11.3</nodeVersion>
-          <npmVersion>6.3.0</npmVersion>
+          <nodeVersion>${node.version}</nodeVersion>
+          <npmVersion>${npm.version}</npmVersion>
           <workingDirectory>src/main/web/blog-web-frontend/src/</workingDirectory>
         </configuration>
         <executions>
