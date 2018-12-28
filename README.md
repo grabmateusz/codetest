@@ -19,9 +19,9 @@ To build module, one need to run:
 
     mvn clean install
 
-To run in development mode, one need to go to blog-web-core directory:
+To run in development mode, one need to go to blog-web-rest-api directory:
 
-    cd blog-web-core
+    cd blog-web-rest-api
 
 and run:
 

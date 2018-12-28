@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.pierceecom.sample</groupId>
-    <artifactId>blog-web-core</artifactId>
+    <artifactId>blog-web-rest-api</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>blog-web-core</name>
+    <name>blog-web-rest-api</name>
 
     <parent>
         <artifactId>codetest</artifactId>

@@ -33,7 +33,7 @@
   <dependencies>
     <dependency>
       <groupId>com.pierceecom.sample</groupId>
-      <artifactId>blog-web-core</artifactId>
+      <artifactId>blog-web-rest-api</artifactId>
       <version>1.0-SNAPSHOT</version>
       <type>jar</type>
     </dependency>
