@@ -9,6 +9,13 @@ import com.pierceecom.blog.dto.validation.NewPostGroup;
 import com.pierceecom.blog.dto.PostDto;
 import com.pierceecom.blog.exceptions.PostNotFoundException;
 import com.pierceecom.blog.services.PostsService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -32,9 +39,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Slf4j
 @RestController
+@Api(value = "Posts", tags = "Posts")
 public class PostsController {
 
   @Autowired
@@ -46,8 +55,18 @@ public class PostsController {
   @Autowired
   private Validator validator;
 
+  @ApiOperation(value = "Get all posts", notes = "Returns all posts")
+  @ApiResponses({
+      @ApiResponse(code = 200, response = ResultsDto.class, message = "Successful operation")
+  })
+  @ApiImplicitParams({
+      @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+          value = "Results page you want to retrieve (0..N)"),
+      @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+          value = "Number of records per page")
+  })
   @GetMapping(value = "/posts", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-  public ResponseEntity<ResultsDto> getAllPosts(Pageable page) {
+  public ResponseEntity<ResultsDto> getAllPosts(@ApiIgnore Pageable page) {
     UUID requestId = UUID.randomUUID();
 
     log.debug("{}: Calling GET request on /posts endpoint", requestId);
@@ -69,24 +88,17 @@ public class PostsController {
     return response;
   }
 
-  @GetMapping(value = "/posts/{postId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-  public ResponseEntity<PostDto> getPostById(@PathVariable Long postId)
-      throws PostNotFoundException {
-    UUID requestId = UUID.randomUUID();
-
-    log.debug("{}: Calling GET request on /posts/{} endpoint", requestId, postId);
-
-    Post post = postsService.getOne(postId);
-    PostDto postDto = mapToDto(post);
-
-    ResponseEntity<PostDto> response = ResponseEntity.ok(postDto);
-    log.debug("{}: Returning Post: {}", requestId, response);
-
-    return response;
-  }
-
+  @ApiOperation(value = "Add a new post")
+  @ApiResponses({
+      @ApiResponse(code = 201, response = PostDto.class, message = "Location of newly created post"),
+      @ApiResponse(code = 400, message = "Invalid input")
+  })
+  @ResponseStatus(HttpStatus.CREATED)
   @PostMapping(value = "/posts", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-  public ResponseEntity<PostDto> addPost(@RequestBody PostDto post, UriComponentsBuilder uriComponentsBuilder) {
+  public ResponseEntity<PostDto> addPost(
+      @ApiParam(name = "body", required = true, value = "Post object that needs to be added")
+      @RequestBody PostDto post,
+      UriComponentsBuilder uriComponentsBuilder) {
     UUID requestId = UUID.randomUUID();
 
     log.warn("{}: Calling POST request on /posts endpoint with argument: {}", requestId, post);
@@ -106,8 +118,18 @@ public class PostsController {
     return result;
   }
 
+  @ApiOperation(value = "Updates a post")
+  @ApiResponses({
+      @ApiResponse(code = 200, response = PostDto.class, message = "Updated post"),
+      @ApiResponse(code = 400, message = "Invalid input"),
+      @ApiResponse(code = 404, message = "Post not found")
+  })
+  @ApiImplicitParam(name = "postId", value = "ID of post to update", required = true)
   @PutMapping(value = "/posts/{postId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-  public ResponseEntity<PostDto> updatePost(@PathVariable String postId, @RequestBody PostDto post, UriComponentsBuilder uriComponentsBuilder) throws PostNotFoundException {
+  public ResponseEntity<PostDto> updatePost(
+      @PathVariable String postId,
+      @ApiParam(name = "body", required = true, value = "Post object that needs to be updated")
+      @RequestBody PostDto post) throws PostNotFoundException {
     UUID requestId = UUID.randomUUID();
 
     log.debug("{}: Calling PUT request on /posts/{} endpoint with argument: {}", requestId, postId, post);
@@ -122,12 +144,41 @@ public class PostsController {
       Post postToUpdate = mapToDomain(post);
       Post updatedPost = postsService.update(postToUpdate);
       PostDto updatedPostDto = mapToDto(updatedPost);
-      result = ResponseEntity.created(uriComponentsBuilder.build(updatedPostDto.getId())).build();
+      result = ResponseEntity.ok(updatedPostDto);
       log.debug("{}: Returning updated Post: {}", requestId, result);
     }
     return result;
   }
 
+  @ApiOperation(value = "Find post by ID")
+  @ApiResponses({
+      @ApiResponse(code = 200, response = PostDto.class, message = "Successful operation"),
+      @ApiResponse(code = 404, message = "Post not found")
+  })
+  @ApiImplicitParam(name = "postId", value = "ID of post to return", required = true)
+  @GetMapping(value = "/posts/{postId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+  public ResponseEntity<PostDto> getPostById(@PathVariable Long postId)
+      throws PostNotFoundException {
+    UUID requestId = UUID.randomUUID();
+
+    log.debug("{}: Calling GET request on /posts/{} endpoint", requestId, postId);
+
+    Post post = postsService.getOne(postId);
+    PostDto postDto = mapToDto(post);
+
+    ResponseEntity<PostDto> response = ResponseEntity.ok(postDto);
+    log.debug("{}: Returning Post: {}", requestId, response);
+
+    return response;
+  }
+
+  @ApiOperation(value = "Deletes a post")
+  @ApiResponses({
+      @ApiResponse(code = 204, message = "Successful operation"),
+      @ApiResponse(code = 404, message = "Post not found")
+  })
+  @ApiImplicitParam(name = "postId", value = "ID of post to delete", required = true)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   @DeleteMapping(value = "/posts/{postId}")
   public ResponseEntity<Void> deletePostById(@PathVariable Long postId) throws PostNotFoundException {
     UUID requestId = UUID.randomUUID();

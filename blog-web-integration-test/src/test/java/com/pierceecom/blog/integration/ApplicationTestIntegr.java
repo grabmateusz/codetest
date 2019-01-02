@@ -224,7 +224,7 @@ public class ApplicationTestIntegr {
     mockMvc.perform(put("/posts/1")
         .content(updatedPost1)
         .headers(getJsonHeaders()))
-        .andExpect(status().isCreated());
+        .andExpect(status().isOk());
 
     expectedResponsePost1 = getResource("post1Updated.json");
     mockMvc.perform(get("/posts/1")
@@ -284,7 +284,7 @@ public class ApplicationTestIntegr {
     mockMvc.perform(put("/posts/1")
         .content(updatedPost1)
         .headers(getJsonHeaders()))
-        .andExpect(status().isCreated());
+        .andExpect(status().isOk());
 
     expectedResponsePost1 = getResource("post1Updated.json");
     mockMvc.perform(get("/posts/1")
@@ -526,7 +526,7 @@ public class ApplicationTestIntegr {
     mockMvc.perform(put("/posts/1")
         .content(updatedPost1)
         .headers(getXmlHeaders()))
-        .andExpect(status().isCreated());
+        .andExpect(status().isOk());
 
     expectedResponsePost1 = getResource("post1Updated.xml");
     mockMvc.perform(get("/posts/1")
@@ -586,7 +586,7 @@ public class ApplicationTestIntegr {
     mockMvc.perform(put("/posts/1")
         .content(updatedPost1)
         .headers(getXmlHeaders()))
-        .andExpect(status().isCreated());
+        .andExpect(status().isOk());
 
     expectedResponsePost1 = getResource("post1Updated.xml");
     mockMvc.perform(get("/posts/1")

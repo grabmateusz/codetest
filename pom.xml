@@ -14,13 +14,18 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
         <maven.war.plugin.version>2.6</maven.war.plugin.version>
+        <maven.surefire.plugin.version>2.6</maven.surefire.plugin.version>
+        <maven.jar.plugin.version>3.1.1</maven.jar.plugin.version>
+        <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
         <lombok.version>1.18.4</lombok.version>
         <spring.boot.version>2.1.1.RELEASE</spring.boot.version>
+        <swagger.version>2.9.2</swagger.version>
         <junit.version>4.12</junit.version>
         <dozer.version>6.4.1</dozer.version>
         <hsqldb.version>2.4.1</hsqldb.version>
         <postgres.version>9.4.1212</postgres.version>
-        <servlet.api.version>3.1.0</servlet.api.version>
+        <servlet.api.version>4.0.1</servlet.api.version>
+        <guava.version>20.0</guava.version>
         <frontend.maven.plugin.version>1.6</frontend.maven.plugin.version>
         <node.version>v8.11.3</node.version>
         <npm.version>6.3.0</npm.version>
@@ -75,6 +80,16 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${servlet.api.version}</version>
@@ -101,6 +116,45 @@
                 <artifactId>postgresql</artifactId>
                 <version>${postgres.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven.resources.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven.jar.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.boot.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${maven.war.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.plugin.version}</version>
+                    <configuration>
+                        <failIfNoTests>false</failIfNoTests>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

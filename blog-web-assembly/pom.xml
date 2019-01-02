@@ -37,10 +37,11 @@
     <finalName>blog-web</finalName>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
-            <id>copy-resources</id>
+            <id>copy-frontend-resources</id>
             <phase>validate</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -54,24 +55,22 @@
               </resources>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <executions>
           <execution>
-            <id>repackage</id>
+            <id>copy-resources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
             <configuration>
-              <classifier>task</classifier>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources</directory>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>
-        <configuration>
-          <jvmArguments>
-            -Dfile.encoding=UTF8 -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000
-          </jvmArguments>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -86,27 +85,15 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>repackage</id>
-            <configuration>
-              <classifier>assemblypackage</classifier>
-            </configuration>
-          </execution>
-        </executions>
-        <configuration>
-          <jvmArguments>
-            -Dfile.encoding=UTF8 -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000
-          </jvmArguments>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>${maven.war.plugin.version}</version>
         <configuration>
+          <webResources>
+            <resource>
+              <directory>src/main/resources/</directory>
+            </resource>
+          </webResources>
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
       </plugin>
@@ -141,10 +128,9 @@
         </property>
       </activation>
       <dependencies>
-        <!-- TODO: Change to other DB - POSTGRES? -->
         <dependency>
-          <groupId>org.hsqldb</groupId>
-          <artifactId>hsqldb</artifactId>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
           <scope>runtime</scope>
         </dependency>
       </dependencies>
