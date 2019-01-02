@@ -10,7 +10,7 @@ import { ModificationType } from "../model/modification-type";
 @Component({
   selector: 'blog-app-add-blog-post',
   templateUrl: './add-blog-post.component.html',
-  styleUrls: ['./add-blog-post.component.css']
+  styleUrls: ['./add-blog-post.component.scss']
 })
 export class AddBlogPostComponent implements OnInit {
 

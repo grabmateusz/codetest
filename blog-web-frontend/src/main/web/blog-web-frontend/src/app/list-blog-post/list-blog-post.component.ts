@@ -7,7 +7,7 @@ import { ModificationType } from "../model/modification-type";
 @Component({
   selector: 'blog-app-list-blog-post',
   templateUrl: './list-blog-post.component.html',
-  styleUrls: ['./list-blog-post.component.css']
+  styleUrls: ['./list-blog-post.component.scss']
 })
 export class ListBlogPostComponent implements OnInit {
 

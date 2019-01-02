@@ -10,7 +10,7 @@ import { ModificationType } from "../model/modification-type";
 @Component({
   selector: 'blog-app-edit-blog-post',
   templateUrl: './edit-blog-post.component.html',
-  styleUrls: ['./edit-blog-post.component.css']
+  styleUrls: ['./edit-blog-post.component.scss']
 })
 export class EditBlogPostComponent implements OnInit {
 
@@ -43,7 +43,6 @@ export class EditBlogPostComponent implements OnInit {
     }, {});
   }
 
-  // convenience getter for easy access to form fields
   get form() { return this.blogPostForm.controls; }
 
   open(content) {

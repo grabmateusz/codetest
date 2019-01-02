@@ -8,7 +8,7 @@ import { ModificationType } from "../model/modification-type";
 @Component({
   selector: 'blog-app-delete-blog-post',
   templateUrl: './delete-blog-post.component.html',
-  styleUrls: ['./delete-blog-post.component.css']
+  styleUrls: ['./delete-blog-post.component.scss']
 })
 export class DeleteBlogPostComponent {
 
