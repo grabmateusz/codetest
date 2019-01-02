@@ -56,3 +56,27 @@ that each test boots up server on which tests are performed. Such an approach
 does not require target server to be up and running.
 
 ## Application Server setup
+
+In order to deploy Blog-Web application it is required to setup JNDI JDBC blogweb resource.
+
+### Configure JNDI JDBC blogweb resource
+
+To create JNDI JDBC blogweb resource, first you need to create a connection pool.
+To do so, please follow screenshots:
+
+![1](img/data-source-1.png)
+
+![2](img/data-source-2.png)
+
+![3](img/data-source-3.png)
+
+![4](img/data-source-4.png)
+
+![5](img/data-source-5.png)
+
+After Connection pool is created, you need to create JNDI JDBC blogweb resource.
+To do so, follow screenshots:
+
+![6](img/data-source-6.png)
+
+![7](img/data-source-7.png)
